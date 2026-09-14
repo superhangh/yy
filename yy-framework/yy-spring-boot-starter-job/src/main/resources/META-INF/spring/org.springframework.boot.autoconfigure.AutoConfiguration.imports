@@ -1,0 +1,2 @@
+com.yy.framework.quartz.config.YyQuartzAutoConfiguration
+com.yy.framework.quartz.config.YyAsyncAutoConfiguration

@@ -1,0 +1,3 @@
+com.yy.framework.mq.redis.config.YyRedisMQProducerAutoConfiguration
+com.yy.framework.mq.redis.config.YyRedisMQConsumerAutoConfiguration
+com.yy.framework.mq.rabbitmq.config.YyRabbitMQAutoConfiguration

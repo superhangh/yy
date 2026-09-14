@@ -1,0 +1,7 @@
+com.yy.framework.apilog.config.YyApiLogAutoConfiguration
+com.yy.framework.jackson.config.YyJacksonAutoConfiguration
+com.yy.framework.swagger.config.YySwaggerAutoConfiguration
+com.yy.framework.web.config.YyWebAutoConfiguration
+com.yy.framework.xss.config.YyXssAutoConfiguration
+com.yy.framework.banner.config.YyBannerAutoConfiguration
+com.yy.framework.encrypt.config.YyApiEncryptAutoConfiguration

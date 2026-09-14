@@ -1,0 +1,2 @@
+com.yy.framework.redis.config.YyRedisAutoConfiguration
+com.yy.framework.redis.config.YyCacheAutoConfiguration
