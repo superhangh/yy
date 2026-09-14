@@ -15,5 +15,5 @@ CREATE TABLE `dispatch_merchant` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否删除',
   PRIMARY KEY (`id`),
-  KEY `idx_member_user_id` (`member_user_id`)
+  UNIQUE KEY `uk_member_user_id` (`member_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='派单商家';

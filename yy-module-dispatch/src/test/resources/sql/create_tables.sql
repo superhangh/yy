@@ -14,5 +14,6 @@ CREATE TABLE IF NOT EXISTS "dispatch_merchant"
     "updater"        varchar(64)  NULL DEFAULT '',
     "update_time"    datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted"        bit(1)       NOT NULL DEFAULT FALSE,
-    PRIMARY KEY ("id")
+    PRIMARY KEY ("id"),
+    UNIQUE ("member_user_id")
 );
