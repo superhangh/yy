@@ -1,0 +1,4 @@
+com.yy.framework.idempotent.config.YyIdempotentConfiguration
+com.yy.framework.lock4j.config.YyLock4jConfiguration
+com.yy.framework.ratelimiter.config.YyRateLimiterConfiguration
+com.yy.framework.signature.config.YyApiSignatureAutoConfiguration

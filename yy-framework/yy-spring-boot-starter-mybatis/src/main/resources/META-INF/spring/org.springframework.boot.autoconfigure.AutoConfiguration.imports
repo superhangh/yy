@@ -1,0 +1,3 @@
+com.yy.framework.datasource.config.YyDataSourceAutoConfiguration
+com.yy.framework.mybatis.config.YyMybatisAutoConfiguration
+com.yy.framework.translate.config.YyTranslateAutoConfiguration

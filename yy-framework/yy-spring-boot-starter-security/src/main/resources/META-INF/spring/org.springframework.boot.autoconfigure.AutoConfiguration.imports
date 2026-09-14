@@ -1,0 +1,3 @@
+com.yy.framework.security.config.YySecurityAutoConfiguration
+com.yy.framework.security.config.YyWebSecurityConfigurerAdapter
+com.yy.framework.operatelog.config.YyOperateLogConfiguration
