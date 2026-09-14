@@ -20,6 +20,7 @@
 <!--        <module>yy-module-report</module>-->
 <!--        <module>yy-module-mp</module>-->
         <module>yy-module-pay</module>
+        <module>yy-module-dispatch</module>
 <!--        <module>yy-module-mall</module>-->
 <!--        <module>yy-module-crm</module>-->
 <!--        <module>yy-module-erp</module>-->

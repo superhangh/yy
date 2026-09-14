@@ -58,6 +58,13 @@
             <version>${revision}</version>
         </dependency>
 
+        <!-- 派单服务 -->
+        <dependency>
+            <groupId>com.yy</groupId>
+            <artifactId>yy-module-dispatch</artifactId>
+            <version>${revision}</version>
+        </dependency>
+
         <!-- 微信公众号模块。默认注释，保证编译速度 -->
 <!--        <dependency>-->
 <!--            <groupId>com.yy</groupId>-->
