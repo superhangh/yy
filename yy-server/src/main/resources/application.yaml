@@ -324,7 +324,7 @@ yy:
     unit-test-enable: false # 是否生成单元测试
     import-enable: false # 是否生成 Excel 导入接口
   tenant: # 多租户相关配置项
-    enable: true
+    enable: false # 关闭多租户（保留 biz-tenant starter，仅禁用其自动配置）
     ignore-urls:
       - /jmreport/* # 积木报表，无法携带租户编号
     ignore-visit-urls:
