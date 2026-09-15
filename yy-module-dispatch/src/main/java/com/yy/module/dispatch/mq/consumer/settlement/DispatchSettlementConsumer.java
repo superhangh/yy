@@ -26,7 +26,7 @@ public class DispatchSettlementConsumer {
             log.info("[onOrderCompleted][订单({})结算成功]", message.getOrderId());
         } catch (Exception ex) {
             // 结算失败（如余额不足）不影响已完成订单，记录日志即可
-            log.warn("[onOrderCompleted][订单({})结算失败：{}]", message.getOrderId(), ex.getMessage());
+            log.warn("[onOrderCompleted][订单({})结算失败]", message.getOrderId(), ex);
         }
     }
 }
