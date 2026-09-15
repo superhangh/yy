@@ -9,7 +9,11 @@ INSERT INTO `system_menu` (`id`, `name`, `permission`, `type`, `sort`, `parent_i
 (90003, '商家审核', 'dispatch:merchant:audit', 3, 2, 90001, '', '', '', '', 0, b'1', b'1', b'1', '1', NOW(), '1', NOW(), b'0'),
 (90004, '派单订单', '', 2, 2, 90000, 'order', 'ep:list', 'dispatch/order/index', 'DispatchOrder', 0, b'1', b'1', b'1', '1', NOW(), '1', NOW(), b'0'),
 (90005, '订单查询', 'dispatch:order:query', 3, 1, 90004, '', '', '', '', 0, b'1', b'1', b'1', '1', NOW(), '1', NOW(), b'0'),
-(90006, '订单取消', 'dispatch:order:cancel', 3, 2, 90004, '', '', '', '', 0, b'1', b'1', b'1', '1', NOW(), '1', NOW(), b'0');
+(90006, '订单取消', 'dispatch:order:cancel', 3, 2, 90004, '', '', '', '', 0, b'1', b'1', b'1', '1', NOW(), '1', NOW(), b'0'),
+(90007, '结算管理', '', 2, 3, 90000, 'settlement', 'ep:money', 'dispatch/settlement/index', 'DispatchSettlement', 0, b'1', b'1', b'1', '1', NOW(), '1', NOW(), b'0'),
+(90008, '结算查询', 'dispatch:settlement:query', 3, 1, 90007, '', '', '', '', 0, b'1', b'1', b'1', '1', NOW(), '1', NOW(), b'0'),
+(90009, '结算退款', 'dispatch:settlement:refund', 3, 2, 90007, '', '', '', '', 0, b'1', b'1', b'1', '1', NOW(), '1', NOW(), b'0'),
+(90010, '手动结算', 'dispatch:settlement:settle', 3, 3, 90007, '', '', '', '', 0, b'1', b'1', b'1', '1', NOW(), '1', NOW(), b'0');
 
 -- 授权超级管理员角色（role_id = 1）
 INSERT INTO `system_role_menu` (`role_id`, `menu_id`, `creator`, `create_time`, `updater`, `update_time`, `deleted`, `tenant_id`) VALUES
@@ -19,4 +23,8 @@ INSERT INTO `system_role_menu` (`role_id`, `menu_id`, `creator`, `create_time`, 
 (1, 90003, '1', NOW(), '1', NOW(), b'0', 1),
 (1, 90004, '1', NOW(), '1', NOW(), b'0', 1),
 (1, 90005, '1', NOW(), '1', NOW(), b'0', 1),
-(1, 90006, '1', NOW(), '1', NOW(), b'0', 1);
+(1, 90006, '1', NOW(), '1', NOW(), b'0', 1),
+(1, 90007, '1', NOW(), '1', NOW(), b'0', 1),
+(1, 90008, '1', NOW(), '1', NOW(), b'0', 1),
+(1, 90009, '1', NOW(), '1', NOW(), b'0', 1),
+(1, 90010, '1', NOW(), '1', NOW(), b'0', 1);
