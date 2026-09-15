@@ -16,7 +16,9 @@ import static com.yy.module.dispatch.enums.ErrorCodeConstants.ORDER_NOT_USER_OWN
 import static com.yy.module.dispatch.enums.ErrorCodeConstants.ORDER_STATUS_ERROR;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Import({DispatchOrderServiceImpl.class, DispatchOrderLogServiceImpl.class})
+@Import({DispatchOrderServiceImpl.class, DispatchOrderLogServiceImpl.class,
+        com.yy.module.dispatch.mq.producer.order.DispatchOrderProducer.class,
+        com.yy.module.dispatch.service.merchant.DispatchMerchantServiceImpl.class})
 public class DispatchOrderServiceTest extends BaseDbUnitTest {
 
     @Resource

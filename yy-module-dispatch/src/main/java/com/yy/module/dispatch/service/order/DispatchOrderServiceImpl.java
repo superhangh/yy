@@ -8,6 +8,7 @@ import com.yy.module.dispatch.dal.mysql.order.DispatchOrderMapper;
 import com.yy.module.dispatch.enums.order.DispatchOrderOperateTypeEnum;
 import com.yy.module.dispatch.enums.order.DispatchOrderPayStatusEnum;
 import com.yy.module.dispatch.enums.order.DispatchOrderStatusEnum;
+import com.yy.module.dispatch.mq.producer.order.DispatchOrderProducer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -28,6 +29,10 @@ public class DispatchOrderServiceImpl implements DispatchOrderService {
     private DispatchOrderMapper orderMapper;
     @Resource
     private DispatchOrderLogService orderLogService;
+    @Resource
+    private DispatchOrderProducer orderProducer;
+    @Resource
+    private com.yy.module.dispatch.service.merchant.DispatchMerchantService merchantService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -49,13 +54,14 @@ public class DispatchOrderServiceImpl implements DispatchOrderService {
         orderMapper.insert(order);
         orderLogService.createLog(order.getId(), DispatchOrderOperateTypeEnum.MERCHANT_CREATE,
                 DispatchOrderOperateTypeEnum.MERCHANT_CREATE.getContent());
+        orderProducer.sendOrderCreated(order);
         return order.getId();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void acceptOrder(Long orderId, Long userId) {
-        validateOrderExists(orderId);
+        DispatchOrderDO order = validateOrderExists(orderId);
         // 抢单：条件更新保证原子
         int rows = orderMapper.updateAccept(orderId, userId);
         if (rows == 0) {
@@ -63,6 +69,13 @@ public class DispatchOrderServiceImpl implements DispatchOrderService {
         }
         orderLogService.createLog(orderId, DispatchOrderOperateTypeEnum.USER_ACCEPT,
                 DispatchOrderOperateTypeEnum.USER_ACCEPT.getContent());
+        // 通知：广播给在线用户 + 定向通知商家
+        Long merchantMemberUserId = null;
+        var merchant = merchantService.getMerchant(order.getMerchantId());
+        if (merchant != null) {
+            merchantMemberUserId = merchant.getMemberUserId();
+        }
+        orderProducer.sendOrderAccepted(orderId, userId, merchantMemberUserId);
     }
 
     @Override
