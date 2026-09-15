@@ -22,4 +22,10 @@ public interface ErrorCodeConstants {
     ErrorCode ORDER_NOT_MERCHANT_OWNER = new ErrorCode(1_099_002_003, "该订单不属于当前商家");
     ErrorCode ORDER_NOT_USER_OWNER = new ErrorCode(1_099_002_004, "该订单不属于当前用户");
 
+    // ========== 钱包 1-099-003-000 ==========
+    ErrorCode WALLET_NOT_EXISTS = new ErrorCode(1_099_003_000, "商家钱包不存在");
+    ErrorCode WALLET_INSUFFICIENT_BALANCE = new ErrorCode(1_099_003_001, "商家钱包余额不足");
+    ErrorCode SETTLEMENT_NOT_EXISTS = new ErrorCode(1_099_003_002, "结算记录不存在");
+    ErrorCode SETTLEMENT_STATUS_ERROR = new ErrorCode(1_099_003_003, "结算状态不允许该操作");
+
 }

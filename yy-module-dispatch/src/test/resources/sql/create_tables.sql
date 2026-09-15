@@ -14,8 +14,43 @@ CREATE TABLE IF NOT EXISTS "dispatch_merchant"
     "updater"        varchar(64)  NULL DEFAULT '',
     "update_time"    datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted"        bit(1)       NOT NULL DEFAULT FALSE,
+    PRIMARY KEY ("id")
+);
+
+CREATE TABLE IF NOT EXISTS "dispatch_merchant_wallet"
+(
+    "id"             bigint  NOT NULL AUTO_INCREMENT,
+    "merchant_id"    bigint  NOT NULL,
+    "balance"        int     NOT NULL DEFAULT 0,
+    "total_recharge" int    NOT NULL DEFAULT 0,
+    "total_consume"  int     NOT NULL DEFAULT 0,
+    "creator"        varchar(64) NULL DEFAULT '',
+    "create_time"    datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updater"        varchar(64) NULL DEFAULT '',
+    "update_time"    datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deleted"        bit(1)  NOT NULL DEFAULT FALSE,
     PRIMARY KEY ("id"),
-    UNIQUE ("member_user_id")
+    UNIQUE ("merchant_id")
+);
+
+CREATE TABLE IF NOT EXISTS "dispatch_settlement"
+(
+    "id"           bigint       NOT NULL AUTO_INCREMENT,
+    "order_id"     bigint       NOT NULL,
+    "merchant_id"  bigint       NOT NULL,
+    "user_id"      bigint       NOT NULL,
+    "amount"       int          NOT NULL,
+    "status"       tinyint      NOT NULL DEFAULT 0,
+    "settle_time"  datetime     NULL,
+    "refund_time"  datetime     NULL,
+    "remark"       varchar(255) NOT NULL DEFAULT '',
+    "creator"      varchar(64)  NULL DEFAULT '',
+    "create_time"  datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updater"      varchar(64)  NULL DEFAULT '',
+    "update_time"  datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deleted"      bit(1)       NOT NULL DEFAULT FALSE,
+    PRIMARY KEY ("id"),
+    UNIQUE ("order_id")
 );
 
 CREATE TABLE IF NOT EXISTS "dispatch_order"
