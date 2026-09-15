@@ -8,12 +8,21 @@ import org.springframework.validation.annotation.Validated;
 
 import jakarta.annotation.Resource;
 
+import static com.yy.framework.common.exception.util.ServiceExceptionUtil.exception;
+import static com.yy.module.dispatch.enums.ErrorCodeConstants.WALLET_AMOUNT_INVALID;
+
 @Service
 @Validated
 public class DispatchMerchantWalletServiceImpl implements DispatchMerchantWalletService {
 
     @Resource
     private DispatchMerchantWalletMapper walletMapper;
+
+    private void validateAmount(Integer amount) {
+        if (amount == null || amount <= 0) {
+            throw exception(WALLET_AMOUNT_INVALID);
+        }
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -37,6 +46,7 @@ public class DispatchMerchantWalletServiceImpl implements DispatchMerchantWallet
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void recharge(Long merchantId, Integer amount) {
+        validateAmount(amount);
         getOrCreateWallet(merchantId);
         walletMapper.updateAdd(merchantId, amount, true);
     }
@@ -50,6 +60,7 @@ public class DispatchMerchantWalletServiceImpl implements DispatchMerchantWallet
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean deduct(Long merchantId, Integer amount) {
+        validateAmount(amount);
         getOrCreateWallet(merchantId);
         return walletMapper.updateDeduct(merchantId, amount) > 0;
     }
@@ -57,6 +68,7 @@ public class DispatchMerchantWalletServiceImpl implements DispatchMerchantWallet
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void credit(Long merchantId, Integer amount) {
+        validateAmount(amount);
         getOrCreateWallet(merchantId);
         walletMapper.updateAdd(merchantId, amount, false);
     }

@@ -27,5 +27,6 @@ public interface ErrorCodeConstants {
     ErrorCode WALLET_INSUFFICIENT_BALANCE = new ErrorCode(1_099_003_001, "商家钱包余额不足");
     ErrorCode SETTLEMENT_NOT_EXISTS = new ErrorCode(1_099_003_002, "结算记录不存在");
     ErrorCode SETTLEMENT_STATUS_ERROR = new ErrorCode(1_099_003_003, "结算状态不允许该操作");
+    ErrorCode WALLET_AMOUNT_INVALID = new ErrorCode(1_099_003_004, "金额必须大于 0");
 
 }
