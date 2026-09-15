@@ -69,7 +69,7 @@ public class AppDispatchOrderController {
     @Operation(summary = "获得订单详情")
     @Parameter(name = "id", description = "订单编号", required = true)
     public CommonResult<AppDispatchOrderRespVO> getOrder(@RequestParam("id") Long id) {
-        DispatchOrderDO order = orderService.getOrder(id);
+        DispatchOrderDO order = orderService.getUserOrder(id, SecurityFrameworkUtils.getLoginUserId());
         return success(DispatchOrderConvert.INSTANCE.convert(order));
     }
 }

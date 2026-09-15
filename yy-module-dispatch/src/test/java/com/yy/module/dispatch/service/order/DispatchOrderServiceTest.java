@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 
 import static com.yy.module.dispatch.enums.ErrorCodeConstants.ORDER_ALREADY_ACCEPTED;
+import static com.yy.module.dispatch.enums.ErrorCodeConstants.ORDER_NOT_EXISTS;
 import static com.yy.module.dispatch.enums.ErrorCodeConstants.ORDER_STATUS_ERROR;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -75,5 +76,17 @@ public class DispatchOrderServiceTest extends BaseDbUnitTest {
         // 未接单就 start -> 状态错误
         ServiceException ex = assertThrows(ServiceException.class, () -> orderService.startOrder(id, 1001L));
         assertEquals(ORDER_STATUS_ERROR.getCode(), ex.getCode());
+    }
+
+    @Test
+    public void testGetUserOrder_permission() {
+        Long id = orderService.createOrder(2001L, buildReqVO());
+        // 待接单：大厅公开，任何用户可见
+        assertNotNull(orderService.getUserOrder(id, 9999L));
+        // 接单后：仅接单本人可见，他人抛 ORDER_NOT_EXISTS
+        orderService.acceptOrder(id, 1001L);
+        assertNotNull(orderService.getUserOrder(id, 1001L));
+        ServiceException ex = assertThrows(ServiceException.class, () -> orderService.getUserOrder(id, 1002L));
+        assertEquals(ORDER_NOT_EXISTS.getCode(), ex.getCode());
     }
 }

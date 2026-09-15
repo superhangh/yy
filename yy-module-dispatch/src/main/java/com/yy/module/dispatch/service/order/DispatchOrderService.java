@@ -21,6 +21,16 @@ public interface DispatchOrderService {
 
     DispatchOrderDO getOrder(Long orderId);
 
+    /**
+     * 用户端订单详情：待接单（大厅可见）或本人接单的订单可见，否则抛 ORDER_NOT_EXISTS
+     */
+    DispatchOrderDO getUserOrder(Long orderId, Long userId);
+
+    /**
+     * 商家端订单详情：仅本商家的订单可见，否则抛 ORDER_NOT_EXISTS
+     */
+    DispatchOrderDO getMerchantOrder(Long orderId, Long merchantId);
+
     PageResult<DispatchOrderDO> getHallPage(DispatchOrderPageReqVO reqVO);
 
     PageResult<DispatchOrderDO> getUserOrderPage(Long userId, DispatchOrderPageReqVO reqVO);

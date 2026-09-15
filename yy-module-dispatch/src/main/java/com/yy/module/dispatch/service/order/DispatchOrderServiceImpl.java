@@ -128,6 +128,30 @@ public class DispatchOrderServiceImpl implements DispatchOrderService {
     }
 
     @Override
+    public DispatchOrderDO getUserOrder(Long orderId, Long userId) {
+        DispatchOrderDO order = orderMapper.selectById(orderId);
+        if (order == null) {
+            throw exception(ORDER_NOT_EXISTS);
+        }
+        // 待接单订单在大厅公开可见；其余仅本人接单可见（避免越权读取他人订单的地址/联系方式）
+        boolean visible = DispatchOrderStatusEnum.isPending(order.getStatus())
+                || java.util.Objects.equals(order.getUserId(), userId);
+        if (!visible) {
+            throw exception(ORDER_NOT_EXISTS);
+        }
+        return order;
+    }
+
+    @Override
+    public DispatchOrderDO getMerchantOrder(Long orderId, Long merchantId) {
+        DispatchOrderDO order = orderMapper.selectById(orderId);
+        if (order == null || !java.util.Objects.equals(order.getMerchantId(), merchantId)) {
+            throw exception(ORDER_NOT_EXISTS);
+        }
+        return order;
+    }
+
+    @Override
     public PageResult<DispatchOrderDO> getHallPage(DispatchOrderPageReqVO reqVO) {
         reqVO.setStatus(DispatchOrderStatusEnum.PENDING.getStatus());
         return orderMapper.selectPage(reqVO);
