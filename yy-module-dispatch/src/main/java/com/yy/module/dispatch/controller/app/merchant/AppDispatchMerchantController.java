@@ -6,8 +6,6 @@ import com.yy.module.dispatch.controller.admin.merchant.vo.DispatchMerchantSaveR
 import com.yy.module.dispatch.controller.app.merchant.vo.AppDispatchMerchantApplyReqVO;
 import com.yy.module.dispatch.controller.app.merchant.vo.AppDispatchMerchantRespVO;
 import com.yy.module.dispatch.dal.dataobject.merchant.DispatchMerchantDO;
-import com.yy.module.dispatch.framework.merchant.core.MerchantContextHolder;
-import com.yy.module.dispatch.framework.merchant.core.MerchantIdentity;
 import com.yy.module.dispatch.service.merchant.DispatchMerchantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

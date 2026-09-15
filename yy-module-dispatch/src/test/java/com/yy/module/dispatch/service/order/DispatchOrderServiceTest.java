@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Import;
 
 import static com.yy.module.dispatch.enums.ErrorCodeConstants.ORDER_ALREADY_ACCEPTED;
 import static com.yy.module.dispatch.enums.ErrorCodeConstants.ORDER_NOT_EXISTS;
+import static com.yy.module.dispatch.enums.ErrorCodeConstants.ORDER_NOT_USER_OWNER;
 import static com.yy.module.dispatch.enums.ErrorCodeConstants.ORDER_STATUS_ERROR;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -87,6 +88,50 @@ public class DispatchOrderServiceTest extends BaseDbUnitTest {
         orderService.acceptOrder(id, 1001L);
         assertNotNull(orderService.getUserOrder(id, 1001L));
         ServiceException ex = assertThrows(ServiceException.class, () -> orderService.getUserOrder(id, 1002L));
+        assertEquals(ORDER_NOT_EXISTS.getCode(), ex.getCode());
+    }
+
+    @Test
+    public void testCancelOrder() {
+        Long id = orderService.createOrder(2001L, buildReqVO());
+        orderService.cancelOrder(id, 2001L, "不需要了");
+        assertEquals(DispatchOrderStatusEnum.CANCELED.getStatus(), orderMapper.selectById(id).getStatus());
+        // 已取消，再次取消 -> 状态错误
+        ServiceException ex = assertThrows(ServiceException.class,
+                () -> orderService.cancelOrder(id, 2001L, "again"));
+        assertEquals(ORDER_STATUS_ERROR.getCode(), ex.getCode());
+    }
+
+    @Test
+    public void testCancelOrderByAdmin() {
+        Long id = orderService.createOrder(2001L, buildReqVO());
+        orderService.acceptOrder(id, 1001L);
+        orderService.cancelOrderByAdmin(id, "管理端取消");
+        assertEquals(DispatchOrderStatusEnum.CANCELED.getStatus(), orderMapper.selectById(id).getStatus());
+    }
+
+    @Test
+    public void testStartOrder_notOwner() {
+        Long id = orderService.createOrder(2001L, buildReqVO());
+        orderService.acceptOrder(id, 1001L);
+        // 非接单人 start -> 归属错误
+        ServiceException ex = assertThrows(ServiceException.class, () -> orderService.startOrder(id, 1002L));
+        assertEquals(ORDER_NOT_USER_OWNER.getCode(), ex.getCode());
+    }
+
+    @Test
+    public void testOrderNotExists() {
+        ServiceException ex1 = assertThrows(ServiceException.class, () -> orderService.startOrder(999999L, 1001L));
+        assertEquals(ORDER_NOT_EXISTS.getCode(), ex1.getCode());
+        ServiceException ex2 = assertThrows(ServiceException.class, () -> orderService.getUserOrder(999999L, 1001L));
+        assertEquals(ORDER_NOT_EXISTS.getCode(), ex2.getCode());
+    }
+
+    @Test
+    public void testGetMerchantOrder_owner() {
+        Long id = orderService.createOrder(2001L, buildReqVO());
+        assertNotNull(orderService.getMerchantOrder(id, 2001L));
+        ServiceException ex = assertThrows(ServiceException.class, () -> orderService.getMerchantOrder(id, 9999L));
         assertEquals(ORDER_NOT_EXISTS.getCode(), ex.getCode());
     }
 }

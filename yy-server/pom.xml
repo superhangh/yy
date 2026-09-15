@@ -170,6 +170,12 @@
             <artifactId>yy-spring-boot-starter-protection</artifactId>
         </dependency>
 
+        <!-- 监控相关：提供 Actuator（/actuator/health 等） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
