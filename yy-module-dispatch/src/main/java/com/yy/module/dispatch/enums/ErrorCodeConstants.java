@@ -15,4 +15,11 @@ public interface ErrorCodeConstants {
     ErrorCode MERCHANT_NOT_ENABLED = new ErrorCode(1_099_001_002, "商家状态非正常，无法操作");
     ErrorCode MERCHANT_STATUS_ERROR = new ErrorCode(1_099_001_003, "商家审核状态不合法");
 
+    // ========== 订单 1-099-002-000 ==========
+    ErrorCode ORDER_NOT_EXISTS = new ErrorCode(1_099_002_000, "派单订单不存在");
+    ErrorCode ORDER_STATUS_ERROR = new ErrorCode(1_099_002_001, "订单当前状态不允许该操作");
+    ErrorCode ORDER_ALREADY_ACCEPTED = new ErrorCode(1_099_002_002, "订单已被接单");
+    ErrorCode ORDER_NOT_MERCHANT_OWNER = new ErrorCode(1_099_002_003, "该订单不属于当前商家");
+    ErrorCode ORDER_NOT_USER_OWNER = new ErrorCode(1_099_002_004, "该订单不属于当前用户");
+
 }
