@@ -3,6 +3,7 @@ package com.yy.module.dispatch.mq.producer.order;
 import com.yy.module.dispatch.dal.dataobject.order.DispatchOrderDO;
 import com.yy.module.dispatch.mq.message.order.DispatchOrderAcceptedMessage;
 import com.yy.module.dispatch.mq.message.order.DispatchOrderCancelledMessage;
+import com.yy.module.dispatch.mq.message.order.DispatchOrderCompletedMessage;
 import com.yy.module.dispatch.mq.message.order.DispatchOrderCreatedMessage;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,12 @@ public class DispatchOrderProducer {
         message.setOrderId(orderId);
         message.setMerchantMemberUserId(merchantMemberUserId);
         message.setReason(reason);
+        applicationContext.publishEvent(message);
+    }
+
+    public void sendOrderCompleted(Long orderId) {
+        DispatchOrderCompletedMessage message = new DispatchOrderCompletedMessage();
+        message.setOrderId(orderId);
         applicationContext.publishEvent(message);
     }
 

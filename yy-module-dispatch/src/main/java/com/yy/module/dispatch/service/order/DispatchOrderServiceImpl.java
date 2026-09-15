@@ -109,6 +109,7 @@ public class DispatchOrderServiceImpl implements DispatchOrderService {
         }
         orderLogService.createLog(orderId, DispatchOrderOperateTypeEnum.USER_FINISH,
                 DispatchOrderOperateTypeEnum.USER_FINISH.getContent());
+        orderProducer.sendOrderCompleted(orderId);
     }
 
     @Override
