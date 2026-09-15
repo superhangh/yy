@@ -27,7 +27,7 @@ public class DispatchMerchantWalletServiceImpl implements DispatchMerchantWallet
                 .build();
         try {
             walletMapper.insert(wallet);
-        } catch (Exception e) {
+        } catch (org.springframework.dao.DuplicateKeyException e) {
             // 并发创建：唯一索引兜底，重新查
             wallet = walletMapper.selectByMerchantId(merchantId);
         }

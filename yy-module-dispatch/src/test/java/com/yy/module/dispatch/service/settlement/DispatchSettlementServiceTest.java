@@ -3,18 +3,14 @@ package com.yy.module.dispatch.service.settlement;
 import com.yy.framework.common.exception.ServiceException;
 import com.yy.framework.test.core.ut.BaseDbUnitTest;
 import com.yy.module.dispatch.controller.admin.order.vo.DispatchOrderCreateReqVO;
-import com.yy.module.dispatch.dal.dataobject.order.DispatchOrderDO;
 import com.yy.module.dispatch.dal.mysql.order.DispatchOrderMapper;
 import com.yy.module.dispatch.enums.order.DispatchOrderPayStatusEnum;
-import com.yy.module.dispatch.enums.settlement.DispatchSettlementStatusEnum;
 import com.yy.module.dispatch.service.order.DispatchOrderService;
 import com.yy.module.dispatch.service.wallet.DispatchMerchantWalletService;
 import com.yy.module.dispatch.service.wallet.DispatchMerchantWalletServiceImpl;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
-
-import java.time.LocalDateTime;
 
 import static com.yy.module.dispatch.enums.ErrorCodeConstants.WALLET_INSUFFICIENT_BALANCE;
 import static org.junit.jupiter.api.Assertions.*;
