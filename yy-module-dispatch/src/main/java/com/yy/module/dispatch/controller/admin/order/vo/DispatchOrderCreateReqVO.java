@@ -1,6 +1,7 @@
 package com.yy.module.dispatch.controller.admin.order.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -34,6 +35,7 @@ public class DispatchOrderCreateReqVO {
 
     @Schema(description = "酬劳金额（分）", requiredMode = Schema.RequiredMode.REQUIRED, example = "1000")
     @NotNull(message = "酬劳金额不能为空")
+    @Min(value = 1, message = "酬劳金额必须大于 0")
     private Integer amount;
 
     @Schema(description = "接单截止时间")

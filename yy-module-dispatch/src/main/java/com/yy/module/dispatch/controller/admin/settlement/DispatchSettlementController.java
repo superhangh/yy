@@ -52,4 +52,13 @@ public class DispatchSettlementController {
         settlementService.refundOrder(orderId);
         return success(true);
     }
+
+    @PutMapping("/settle")
+    @Operation(summary = "手动结算（自动结算失败后重试）")
+    @Parameter(name = "orderId", description = "订单编号", required = true)
+    @PreAuthorize("@ss.hasPermission('dispatch:settlement:settle')")
+    public CommonResult<Boolean> settleOrder(@RequestParam("orderId") Long orderId) {
+        settlementService.settleOrder(orderId);
+        return success(true);
+    }
 }
