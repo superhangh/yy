@@ -19,6 +19,13 @@ public interface DispatchOrderService {
 
     void cancelOrderByAdmin(Long orderId, String reason);
 
+    /**
+     * 取消超时未接的订单（status=待接单 且 deadline < now）
+     *
+     * @return 取消数量
+     */
+    int cancelTimeoutOrders();
+
     DispatchOrderDO getOrder(Long orderId);
 
     /**

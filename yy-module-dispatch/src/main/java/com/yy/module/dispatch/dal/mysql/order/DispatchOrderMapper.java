@@ -30,6 +30,16 @@ public interface DispatchOrderMapper extends BaseMapperX<DispatchOrderDO> {
     }
 
     /**
+     * 查询指定状态且 deadline 早于给定时间的订单（用于超时未接扫描）
+     */
+    default java.util.List<DispatchOrderDO> selectListByStatusAndDeadlineLt(Integer status, LocalDateTime deadline) {
+        return selectList(new LambdaQueryWrapperX<DispatchOrderDO>()
+                .eq(DispatchOrderDO::getStatus, status)
+                .isNotNull(DispatchOrderDO::getDeadline)
+                .lt(DispatchOrderDO::getDeadline, deadline));
+    }
+
+    /**
      * 开始服务：ACCEPTED -> SERVING，条件更新（WHERE status=ACCEPTED）
      *
      * @return 影响行数；0 表示状态已变（并发）

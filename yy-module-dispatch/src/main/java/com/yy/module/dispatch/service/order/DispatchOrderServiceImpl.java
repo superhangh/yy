@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import jakarta.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static com.yy.framework.common.exception.util.ServiceExceptionUtil.exception;
@@ -133,6 +134,24 @@ public class DispatchOrderServiceImpl implements DispatchOrderService {
             throw exception(ORDER_STATUS_ERROR);
         }
         orderLogService.createLog(orderId, DispatchOrderOperateTypeEnum.ADMIN_CANCEL, reason);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int cancelTimeoutOrders() {
+        List<DispatchOrderDO> orders = orderMapper.selectListByStatusAndDeadlineLt(
+                DispatchOrderStatusEnum.PENDING.getStatus(), LocalDateTime.now());
+        int count = 0;
+        for (DispatchOrderDO order : orders) {
+            // 条件更新：仅当仍是待接单才取消，避免与并发抢单互相覆盖
+            if (orderMapper.updateCancel(order.getId(), "超时未接单，系统自动取消",
+                    DispatchOrderStatusEnum.PENDING.getStatus()) > 0) {
+                orderLogService.createLog(order.getId(), DispatchOrderOperateTypeEnum.SYSTEM_CANCEL,
+                        DispatchOrderOperateTypeEnum.SYSTEM_CANCEL.getContent());
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override
