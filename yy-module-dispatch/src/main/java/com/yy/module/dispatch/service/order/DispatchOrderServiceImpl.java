@@ -143,11 +143,19 @@ public class DispatchOrderServiceImpl implements DispatchOrderService {
                 DispatchOrderStatusEnum.PENDING.getStatus(), LocalDateTime.now());
         int count = 0;
         for (DispatchOrderDO order : orders) {
+            String reason = "超时未接单，系统自动取消";
             // 条件更新：仅当仍是待接单才取消，避免与并发抢单互相覆盖
-            if (orderMapper.updateCancel(order.getId(), "超时未接单，系统自动取消",
+            if (orderMapper.updateCancel(order.getId(), reason,
                     DispatchOrderStatusEnum.PENDING.getStatus()) > 0) {
                 orderLogService.createLog(order.getId(), DispatchOrderOperateTypeEnum.SYSTEM_CANCEL,
                         DispatchOrderOperateTypeEnum.SYSTEM_CANCEL.getContent());
+                // 通知发单商家
+                Long merchantMemberUserId = null;
+                var merchant = merchantService.getMerchant(order.getMerchantId());
+                if (merchant != null) {
+                    merchantMemberUserId = merchant.getMemberUserId();
+                }
+                orderProducer.sendOrderCancelled(order.getId(), merchantMemberUserId, reason);
                 count++;
             }
         }
