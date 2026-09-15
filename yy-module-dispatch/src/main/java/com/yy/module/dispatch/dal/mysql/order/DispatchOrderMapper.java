@@ -29,6 +29,45 @@ public interface DispatchOrderMapper extends BaseMapperX<DispatchOrderDO> {
                 .isNull(DispatchOrderDO::getUserId));
     }
 
+    /**
+     * 开始服务：ACCEPTED -> SERVING，条件更新（WHERE status=ACCEPTED）
+     *
+     * @return 影响行数；0 表示状态已变（并发）
+     */
+    default int updateStart(Long id) {
+        return update(null, new LambdaUpdateWrapper<DispatchOrderDO>()
+                .set(DispatchOrderDO::getStatus, DispatchOrderStatusEnum.SERVING.getStatus())
+                .set(DispatchOrderDO::getStartTime, LocalDateTime.now())
+                .eq(DispatchOrderDO::getId, id)
+                .eq(DispatchOrderDO::getStatus, DispatchOrderStatusEnum.ACCEPTED.getStatus()));
+    }
+
+    /**
+     * 完成服务：SERVING -> COMPLETED，条件更新（WHERE status=SERVING）
+     *
+     * @return 影响行数；0 表示状态已变（并发）
+     */
+    default int updateFinish(Long id) {
+        return update(null, new LambdaUpdateWrapper<DispatchOrderDO>()
+                .set(DispatchOrderDO::getStatus, DispatchOrderStatusEnum.COMPLETED.getStatus())
+                .set(DispatchOrderDO::getFinishTime, LocalDateTime.now())
+                .eq(DispatchOrderDO::getId, id)
+                .eq(DispatchOrderDO::getStatus, DispatchOrderStatusEnum.SERVING.getStatus()));
+    }
+
+    /**
+     * 取消订单：仅当状态在 allowedStatuses 内才取消，条件更新（避免覆盖并发抢单/完成）
+     *
+     * @return 影响行数；0 表示状态不允许取消（或已被并发变更）
+     */
+    default int updateCancel(Long id, String reason, Integer... allowedStatuses) {
+        return update(null, new LambdaUpdateWrapper<DispatchOrderDO>()
+                .set(DispatchOrderDO::getStatus, DispatchOrderStatusEnum.CANCELED.getStatus())
+                .set(DispatchOrderDO::getCancelReason, reason)
+                .eq(DispatchOrderDO::getId, id)
+                .in(DispatchOrderDO::getStatus, (Object[]) allowedStatuses));
+    }
+
     default PageResult<DispatchOrderDO> selectPage(DispatchOrderPageReqVO reqVO) {
         return selectPage(reqVO, new LambdaQueryWrapperX<DispatchOrderDO>()
                 .eqIfPresent(DispatchOrderDO::getMerchantId, reqVO.getMerchantId())

@@ -30,6 +30,7 @@ public class DispatchOrderServiceImpl implements DispatchOrderService {
     private DispatchOrderLogService orderLogService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Long createOrder(Long merchantId, DispatchOrderCreateReqVO reqVO) {
         DispatchOrderDO order = DispatchOrderDO.builder()
                 .no(generateNo())
@@ -72,10 +73,10 @@ public class DispatchOrderServiceImpl implements DispatchOrderService {
             throw exception(ORDER_STATUS_ERROR);
         }
         validateOrderOwnerByUser(order, userId);
-        DispatchOrderDO update = DispatchOrderDO.builder()
-                .id(orderId).status(DispatchOrderStatusEnum.SERVING.getStatus())
-                .startTime(LocalDateTime.now()).build();
-        orderMapper.updateById(update);
+        // 条件更新，避免与并发取消/完成互相覆盖
+        if (orderMapper.updateStart(orderId) == 0) {
+            throw exception(ORDER_STATUS_ERROR);
+        }
         orderLogService.createLog(orderId, DispatchOrderOperateTypeEnum.USER_START,
                 DispatchOrderOperateTypeEnum.USER_START.getContent());
     }
@@ -88,10 +89,10 @@ public class DispatchOrderServiceImpl implements DispatchOrderService {
             throw exception(ORDER_STATUS_ERROR);
         }
         validateOrderOwnerByUser(order, userId);
-        DispatchOrderDO update = DispatchOrderDO.builder()
-                .id(orderId).status(DispatchOrderStatusEnum.COMPLETED.getStatus())
-                .finishTime(LocalDateTime.now()).build();
-        orderMapper.updateById(update);
+        // 条件更新，避免与并发取消互相覆盖
+        if (orderMapper.updateFinish(orderId) == 0) {
+            throw exception(ORDER_STATUS_ERROR);
+        }
         orderLogService.createLog(orderId, DispatchOrderOperateTypeEnum.USER_FINISH,
                 DispatchOrderOperateTypeEnum.USER_FINISH.getContent());
     }
@@ -99,29 +100,25 @@ public class DispatchOrderServiceImpl implements DispatchOrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void cancelOrder(Long orderId, Long merchantId, String reason) {
-        DispatchOrderDO order = validateOrderOwnerByMerchant(orderId, merchantId);
-        // 仅待接单可取消（已接单后的取消走后续退款流程，暂不允许）
-        if (!DispatchOrderStatusEnum.isPending(order.getStatus())) {
+        validateOrderOwnerByMerchant(orderId, merchantId);
+        // 仅待接单可取消；条件更新避免覆盖并发抢单
+        if (orderMapper.updateCancel(orderId, reason, DispatchOrderStatusEnum.PENDING.getStatus()) == 0) {
             throw exception(ORDER_STATUS_ERROR);
         }
-        DispatchOrderDO update = DispatchOrderDO.builder()
-                .id(orderId).status(DispatchOrderStatusEnum.CANCELED.getStatus())
-                .cancelReason(reason).build();
-        orderMapper.updateById(update);
         orderLogService.createLog(orderId, DispatchOrderOperateTypeEnum.MERCHANT_CANCEL, reason);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void cancelOrderByAdmin(Long orderId, String reason) {
-        DispatchOrderDO order = validateOrderExists(orderId);
-        if (DispatchOrderStatusEnum.isCompleted(order.getStatus()) || DispatchOrderStatusEnum.isCanceled(order.getStatus())) {
+        validateOrderExists(orderId);
+        // 未完成/未取消可强制取消；条件更新避免覆盖并发完成
+        if (orderMapper.updateCancel(orderId, reason,
+                DispatchOrderStatusEnum.PENDING.getStatus(),
+                DispatchOrderStatusEnum.ACCEPTED.getStatus(),
+                DispatchOrderStatusEnum.SERVING.getStatus()) == 0) {
             throw exception(ORDER_STATUS_ERROR);
         }
-        DispatchOrderDO update = DispatchOrderDO.builder()
-                .id(orderId).status(DispatchOrderStatusEnum.CANCELED.getStatus())
-                .cancelReason(reason).build();
-        orderMapper.updateById(update);
         orderLogService.createLog(orderId, DispatchOrderOperateTypeEnum.ADMIN_CANCEL, reason);
     }
 
